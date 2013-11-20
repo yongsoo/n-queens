@@ -150,7 +150,7 @@
     // Major Diagonals - go from top-left to bottom-right
     // --------------------------------------------------------------
     // 
-    // test if a specific major diagonal on this board contains a conflict
+
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndex){
       var board = this.rows();
       var hasConflict = false;
@@ -167,10 +167,9 @@
 
         majorDiagonalColumnIndex++;
       })
-      return hasConflict; // fixme
+      return hasConflict;
     },
 
-    // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function(){
       var board = this.rows();
       var hasConflict = false;
@@ -190,14 +189,38 @@
     // Minor Diagonals - go from top-right to bottom-left
     // --------------------------------------------------------------
     // 
-    // test if a specific minor diagonal on this board contains a conflict
-    hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow){
-      return false; // fixme
+
+    hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndex){
+      var board = this.rows();
+      var hasConflict = false;
+      var diagPieceCount = 0;
+
+      _.each(board, function(row) {
+        if (row[minorDiagonalColumnIndex] && !hasConflict) {
+          diagPieceCount++;
+        }
+
+        if (diagPieceCount > 1) {
+          hasConflict = true;
+        }
+
+        minorDiagonalColumnIndex--;
+      })
+      return hasConflict;
     },
 
-    // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function(){
-      return false; // fixme
+      var board = this.rows();
+      var hasConflict = false;
+      var that = this;
+      _.each(board, function(row, rowIndex) {
+        _.each(row, function(boardPosition, colIndex) {
+          if (that.hasMinorDiagonalConflictAt(colIndex) && !hasConflict) {
+            hasConflict = true;
+          }
+        });
+      });
+      return hasConflict;
     }
 
     /*--------------------  End of Helper Functions  ---------------------*/
