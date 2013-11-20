@@ -111,15 +111,38 @@
 
     // COLUMNS - run from top to bottom
     // --------------------------------------------------------------
-    // 
-    // test if a specific column on this board contains a conflict
+    //
+
     hasColConflictAt: function(colIndex){
-      return false; // fixme
+      var board = this.rows();
+      var hasConflict = false;
+      var colPieceCount = 0;
+
+      _.each(board, function(row) {
+        if (row[colIndex] && !hasConflict) {
+          colPieceCount++;
+        }
+
+        if (colPieceCount > 1) {
+          hasConflict = true;
+        }
+      });
+
+      return hasConflict;
     },
 
-    // test if any columns on this board contain conflicts
     hasAnyColConflicts: function(){
-      return false; // fixme
+      var board = this.rows();
+      var hasConflict = false;
+      var that = this;
+      _.each(board, function(row, rowIndex) {
+        _.each(row, function(boardPosition, colIndex) {
+          if (that.hasColConflictAt(colIndex) && !hasConflict) {
+            hasConflict = true;
+          }
+        });
+      });
+      return hasConflict;
     },
 
 
