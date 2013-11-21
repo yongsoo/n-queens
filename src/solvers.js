@@ -12,34 +12,50 @@
 
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n rooks placed such that none of them can attack each other
-window.findNRooksSolution = function(n, colIndex){
+window.findNRooksSolution = function(n, colIndex, rowIndex){
   n = n || 1;
   colIndex = colIndex || 0;
+  rowIndex = rowIndex || 0;
   var solution = undefined;
-  var rowIndex = 0;
+  var piecesPlaced = 0;
 
   var board = new Board({'n': n});
 
+  console.log(n);
+
   var recur = function() {
-    if(rowIndex > n - 1) {
+    // if(rowIndex > n - 1) {
+    if(piecesPlaced === n) {
       return;
     }
 
     board.togglePiece(rowIndex, colIndex);
 
-    if(board.hasAnyRowConflicts() || board.hasAnyColConflicts()) {
+    if(board.hasAnyRooksConflicts()) {
       // remove the piece;
       board.togglePiece(rowIndex, colIndex);
 
+      // move to next col
       if(colIndex <= n - 1) {
         colIndex++;
         recur();
       }
     }
 
+    piecesPlaced++;
+
     // go to next row
     rowIndex++;
     colIndex = 0;
+
+    // If at the last row, start from top again
+    // if(rowIndex > n - 1) {
+      // rowIndex = 0;
+    // }
+
+    // if(piecesPlaced === 1 && n !== 1) {
+      // rowIndex = 0;
+    // }
 
     recur();
 
@@ -57,80 +73,33 @@ window.findNRooksSolution = function(n, colIndex){
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n){
+  // debugger;
   n = n || 1;
   var solutionCount = 0;
   var allSolutions = [];
 
-  for(var i = 0; i < n; i++) {
-    var board = this.findNRooksSolution(n, i);
-    var count = 0;
+  for(var rowsIndex = 0; rowsIndex < n; rowsIndex++) {
+    for(var colIndex = 0; colIndex < n; colIndex++) {
+      var board = this.findNRooksSolution(n, colIndex, rowsIndex);
 
-    _.each(board, function(row) {
-      _.each(row, function(position) {
-        if (position === 1) {
-          count++;
-        }
+      // Check if solution is valid
+      var count = 0;
+      _.each(board, function(row) {
+        _.each(row, function(position) {
+          if (position === 1) {
+            count++;
+          }
+        });
       });
-    });
 
-    // console.table(board);
+      console.table(board);
 
-    if (count === n) {
-      solutionCount++;
-      allSolutions.push(board);
+      if (count === n) {
+        solutionCount++;
+        allSolutions.push(board);
+      }
     }
   }
-
-  var reverseBoard = function(board) {
-    _.each(board, function(row) {
-      row.reverse();
-    });
-    return board;
-  }
-
-  // var clone = function(existingArray) {
-  //   var newObj = (existingArray instanceof Array) ? [] : {};
-  //   for (i in existingArray) {
-  //     if (i == 'clone') continue;
-  //     if (existingArray[i] && typeof existingArray[i] == "object") {
-  //       newObj[i] = clone(existingArray[i]);
-  //     } else {
-  //       newObj[i] = existingArray[i]
-  //     }
-  //   }
-  //   return newObj;
-  // }
-
-
-  // if (n !== 1 && n !== 2) {
-  //   console.log('n = ', n);
-
-  //   // var reversedPossibleSolutions = allSolutions.slice(0);
-  //   var reversedPossibleSolutions = clone(allSolutions);
-
-  //   console.log(allSolutions);
-  //   console.log(reversedPossibleSolutions);
-
-  //   _.each(reversedPossibleSolutions, function(board, index) {
-  //     reversedPossibleSolutions[index] = reverseBoard(reversedPossibleSolutions[index]);
-  //   });
-
-  //   _.each(reversedPossibleSolutions, function(possibleSolution, index) {
-  //     var found = false;
-  //     console.table(possibleSolution);
-  //     _.each(allSolutions, function(solution, solutionKey) {
-  //       // Compare solutions
-  //       if(JSON.stringify(solution) === JSON.stringify(possibleSolution) && !found) {
-  //         found = true;
-  //       }
-  //     });
-
-  //     if(!found) {
-  //       allSolutions.push(possibleSolution);
-  //       solutionCount++;
-  //     }
-  //   });
-  // }
 
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
