@@ -12,11 +12,11 @@
 
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n rooks placed such that none of them can attack each other
-window.findNRooksSolution = function(n){
+window.findNRooksSolution = function(n, colIndex){
   n = n || 1;
+  colIndex = colIndex || 0;
   var solution = undefined;
   var rowIndex = 0;
-  var colIndex = 0;
 
   var board = new Board({'n': n});
 
@@ -57,7 +57,80 @@ window.findNRooksSolution = function(n){
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n){
-  var solutionCount = undefined; //fixme
+  n = n || 1;
+  var solutionCount = 0;
+  var allSolutions = [];
+
+  for(var i = 0; i < n; i++) {
+    var board = this.findNRooksSolution(n, i);
+    var count = 0;
+
+    _.each(board, function(row) {
+      _.each(row, function(position) {
+        if (position === 1) {
+          count++;
+        }
+      });
+    });
+
+    // console.table(board);
+
+    if (count === n) {
+      solutionCount++;
+      allSolutions.push(board);
+    }
+  }
+
+  var reverseBoard = function(board) {
+    _.each(board, function(row) {
+      row.reverse();
+    });
+    return board;
+  }
+
+  // var clone = function(existingArray) {
+  //   var newObj = (existingArray instanceof Array) ? [] : {};
+  //   for (i in existingArray) {
+  //     if (i == 'clone') continue;
+  //     if (existingArray[i] && typeof existingArray[i] == "object") {
+  //       newObj[i] = clone(existingArray[i]);
+  //     } else {
+  //       newObj[i] = existingArray[i]
+  //     }
+  //   }
+  //   return newObj;
+  // }
+
+
+  // if (n !== 1 && n !== 2) {
+  //   console.log('n = ', n);
+
+  //   // var reversedPossibleSolutions = allSolutions.slice(0);
+  //   var reversedPossibleSolutions = clone(allSolutions);
+
+  //   console.log(allSolutions);
+  //   console.log(reversedPossibleSolutions);
+
+  //   _.each(reversedPossibleSolutions, function(board, index) {
+  //     reversedPossibleSolutions[index] = reverseBoard(reversedPossibleSolutions[index]);
+  //   });
+
+  //   _.each(reversedPossibleSolutions, function(possibleSolution, index) {
+  //     var found = false;
+  //     console.table(possibleSolution);
+  //     _.each(allSolutions, function(solution, solutionKey) {
+  //       // Compare solutions
+  //       if(JSON.stringify(solution) === JSON.stringify(possibleSolution) && !found) {
+  //         found = true;
+  //       }
+  //     });
+
+  //     if(!found) {
+  //       allSolutions.push(possibleSolution);
+  //       solutionCount++;
+  //     }
+  //   });
+  // }
 
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
