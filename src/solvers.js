@@ -96,9 +96,10 @@ window.countNQueensSolutions = function(n){
   n = n || 1;
   var solutionCount = 0;
 
-  var findSolution = function(board, startRow, startCol) {
-
+  var findSolution = function(board, startRow) {
+    // debugger;
     if(startRow === n) {
+      console.table(board.rows());
       solutionCount++;
       return;
     }

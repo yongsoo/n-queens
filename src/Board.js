@@ -175,40 +175,58 @@
 
     // Major Diagonals - go from top-left to bottom-right
     // --------------------------------------------------------------
-    // 
+    //
 
-    hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndex){
-      var board = this.rows();
-      var hasConflict = false;
-      var diagPieceCount = 0;
-
-      for(var i = 0; i < board.length; i++) {
-        if (board[i][majorDiagonalColumnIndex] && !hasConflict) {
-          diagPieceCount++;
-        }
-
-        if (diagPieceCount > 1) {
-          hasConflict = true;
-        }
-
-        majorDiagonalColumnIndex++;
+    hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow){
+      var size = this.get('n'), count = 0;
+      var rowIdx = 0, colIdx = majorDiagonalColumnIndexAtFirstRow;
+      for( ; rowIdx < size && colIdx < size; rowIdx++, colIdx++) {
+        if (colIdx < 0) { continue; }
+        var row = this.get(rowIdx);
+        count += row[colIdx];
       }
-      return hasConflict;
+      return count > 1;
+
+      // var board = this.rows();
+      // var hasConflict = false;
+      // var diagPieceCount = 0;
+
+      // for(var i = 0; i < board.length; i++) {
+      //   if (board[i][majorDiagonalColumnIndex] && !hasConflict) {
+      //     diagPieceCount++;
+      //   }
+
+      //   if (diagPieceCount > 1) {
+      //     hasConflict = true;
+      //   }
+
+      //   majorDiagonalColumnIndex++;
+      // }
+      // return hasConflict;
     },
 
     hasAnyMajorDiagonalConflicts: function(){
-      var board = this.rows();
-      var hasConflict = false;
-      var that = this;
+      var size = this.get('n');
 
-      for(var i = 0; i < board.length; i++) {
-        for(var j = 0; j < board.length; j++) {
-          if (that.hasMajorDiagonalConflictAt(board[i][j]) && !hasConflict) {
-            hasConflict = true;
-          }
+      for(var i = 1 - size; i < size; i++) {
+        if (this.hasMajorDiagonalConflictAt(i)) {
+          return true;
         }
       }
-      return hasConflict;
+      return false;
+
+      // var board = this.rows();
+      // var hasConflict = false;
+      // // var that = this;
+
+      // for(var i = 0; i < board.length; i++) {
+      //   for(var j = 0; j < board.length; j++) {
+      //     if (this.hasMajorDiagonalConflictAt(board[i][j]) && !hasConflict) {
+      //       hasConflict = true;
+      //     }
+      //   }
+      // }
+      // return hasConflict;
     },
 
 
@@ -218,36 +236,56 @@
     // 
 
     hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndex){
-      var board = this.rows();
-      var hasConflict = false;
-      var diagPieceCount = 0;
+      var size = this.get('n'), count = 0;
+      var rowIdx = 0, colIdx = minorDiagonalColumnIndex;
 
-      _.each(board, function(row) {
-        if (row[minorDiagonalColumnIndex] && !hasConflict) {
-          diagPieceCount++;
-        }
+      for( ; rowIdx < size && colIdx >= 0; rowIdx++, colIdx--) {
+        if(colIdx >= size) { continue; }
+        var row = this.get(rowIdx);
+        count += row[colIdx];
+      }
 
-        if (diagPieceCount > 1) {
-          hasConflict = true;
-        }
+      return count > 1;
 
-        minorDiagonalColumnIndex--;
-      })
-      return hasConflict;
+      // var board = this.rows();
+      // var hasConflict = false;
+      // var diagPieceCount = 0;
+
+      // _.each(board, function(row) {
+      //   if (row[minorDiagonalColumnIndex] && !hasConflict) {
+      //     diagPieceCount++;
+      //   }
+
+      //   if (diagPieceCount > 1) {
+      //     hasConflict = true;
+      //   }
+
+      //   minorDiagonalColumnIndex--;
+      // })
+      // return hasConflict;
     },
 
     hasAnyMinorDiagonalConflicts: function(){
-      var board = this.rows();
-      var hasConflict = false;
-      var that = this;
-      _.each(board, function(row, rowIndex) {
-        _.each(row, function(boardPosition, colIndex) {
-          if (that.hasMinorDiagonalConflictAt(colIndex) && !hasConflict) {
-            hasConflict = true;
-          }
-        });
-      });
-      return hasConflict;
+      var size = this.get('n');
+
+      for(var i = size*2-1; i >= 0; i--) {
+        if(this.hasMinorDiagonalConflictAt(i)) {
+          return true;
+        }
+      }
+
+      return false;
+      // var board = this.rows();
+      // var hasConflict = false;
+      // var that = this;
+      // _.each(board, function(row, rowIndex) {
+      //   _.each(row, function(boardPosition, colIndex) {
+      //     if (that.hasMinorDiagonalConflictAt(colIndex) && !hasConflict) {
+      //       hasConflict = true;
+      //     }
+      //   });
+      // });
+      // return hasConflict;
     }
 
     /*--------------------  End of Helper Functions  ---------------------*/
