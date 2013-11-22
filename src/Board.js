@@ -79,32 +79,45 @@
     // 
 
     hasRowConflictAt: function(rowIndex){
-      var row = this.get(rowIndex);
-      var hasConflict = false;
-      var rowPieceCount = 0;
+      var row = this.get(rowIndex), count = 0;
+      for(var i = 0; i < row.length; i++) {
+        count += row[i];
+      }
+      return count > 1;
+      // var row = this.get(rowIndex);
+      // var hasConflict = false;
+      // var rowPieceCount = 0;
 
-      _.each(row, function(position, posindex){
-        if(position && !hasConflict) {
-          rowPieceCount++;
-        }
-        if(rowPieceCount > 1) {
-          hasConflict = true;
-        }
-      });
+      // _.each(row, function(position, posindex){
+      //   if(position && !hasConflict) {
+      //     rowPieceCount++;
+      //   }
+      //   if(rowPieceCount > 1) {
+      //     hasConflict = true;
+      //   }
+      // });
 
-      return hasConflict;
+      // return hasConflict;
     },
 
     hasAnyRowConflicts: function(){
-      var board = this.rows();
-      var hasConflict = false;
-      var that = this;
-      _.each(board, function(row, rowIndex) {
-        if (that.hasRowConflictAt(rowIndex) && !hasConflict) {
-          hasConflict = true;
+      var size = this.get('n');
+      for(var i = 0; i < size; i++) {
+        if(this.hasRowConflictAt(i)) {
+          return true;
         }
-      });
-      return hasConflict;
+      }
+
+      return false;
+      // var board = this.rows();
+      // var hasConflict = false;
+      // var that = this;
+      // _.each(board, function(row, rowIndex) {
+      //   if (that.hasRowConflictAt(rowIndex) && !hasConflict) {
+      //     hasConflict = true;
+      //   }
+      // });
+      // return hasConflict;
     },
 
 
@@ -114,35 +127,48 @@
     //
 
     hasColConflictAt: function(colIndex){
-      var board = this.rows();
-      var hasConflict = false;
-      var colPieceCount = 0;
+      var size = this.get('n'), count = 0;
+      for(var i = 0; i < size; i++) {
+        var row = this.get(i);
+        count += row[colIndex];
+      }
+      return count > 1;
+      // var board = this.rows();
+      // var hasConflict = false;
+      // var colPieceCount = 0;
 
-      _.each(board, function(row) {
-        if (row[colIndex] && !hasConflict) {
-          colPieceCount++;
-        }
+      // _.each(board, function(row) {
+      //   if (row[colIndex] && !hasConflict) {
+      //     colPieceCount++;
+      //   }
 
-        if (colPieceCount > 1) {
-          hasConflict = true;
-        }
-      });
+      //   if (colPieceCount > 1) {
+      //     hasConflict = true;
+      //   }
+      // });
 
-      return hasConflict;
+      // return hasConflict;
     },
 
     hasAnyColConflicts: function(){
-      var board = this.rows();
-      var hasConflict = false;
-      var that = this;
-      _.each(board, function(row, rowIndex) {
-        _.each(row, function(boardPosition, colIndex) {
-          if (that.hasColConflictAt(colIndex) && !hasConflict) {
-            hasConflict = true;
-          }
-        });
-      });
-      return hasConflict;
+      var size = this.get('n');
+      for(var i = 0; i < size; i++) {
+        if(this.hasColConflictAt(i)){
+          return true;
+        }
+      }
+      return false;
+      // var board = this.rows();
+      // var hasConflict = false;
+      // var that = this;
+      // _.each(board, function(row, rowIndex) {
+      //   _.each(row, function(boardPosition, colIndex) {
+      //     if (that.hasColConflictAt(colIndex) && !hasConflict) {
+      //       hasConflict = true;
+      //     }
+      //   });
+      // });
+      // return hasConflict;
     },
 
 
@@ -156,8 +182,8 @@
       var hasConflict = false;
       var diagPieceCount = 0;
 
-      _.each(board, function(row) {
-        if (row[majorDiagonalColumnIndex] && !hasConflict) {
+      for(var i = 0; i < board.length; i++) {
+        if (board[i][majorDiagonalColumnIndex] && !hasConflict) {
           diagPieceCount++;
         }
 
@@ -166,7 +192,7 @@
         }
 
         majorDiagonalColumnIndex++;
-      })
+      }
       return hasConflict;
     },
 
@@ -174,13 +200,14 @@
       var board = this.rows();
       var hasConflict = false;
       var that = this;
-      _.each(board, function(row, rowIndex) {
-        _.each(row, function(boardPosition, colIndex) {
-          if (that.hasMajorDiagonalConflictAt(colIndex) && !hasConflict) {
+
+      for(var i = 0; i < board.length; i++) {
+        for(var j = 0; j < board.length; j++) {
+          if (that.hasMajorDiagonalConflictAt(board[i][j]) && !hasConflict) {
             hasConflict = true;
           }
-        });
-      });
+        }
+      }
       return hasConflict;
     },
 
